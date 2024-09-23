@@ -22,6 +22,10 @@ class MainButton extends StatelessWidget {
         ),
         child: Text(
           text,
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
         ),
       ),
     );
