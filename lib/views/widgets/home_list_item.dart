@@ -27,8 +27,8 @@ class HomeListItem extends StatelessWidget {
               Align(
                 alignment: Alignment.topLeft,
                 child: SizedBox(
-                  height: 50,
-                  width: 30,
+                  height: 40,
+                  width: 40,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
@@ -66,11 +66,21 @@ class HomeListItem extends StatelessWidget {
                 ),
           ),
           const SizedBox(height: 6),
-          Text(
-            '${product.price} \$',
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: Colors.grey,
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '${product.price}\$',
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Colors.grey,
+                        decoration: TextDecoration.lineThrough,
+                      ),
                 ),
+                TextSpan(
+                  text: '${product.price * (product.discount) / 100}\$',
+                ),
+              ],
+            ),
           ),
         ],
       ),
