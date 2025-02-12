@@ -2,6 +2,7 @@ import 'package:ecommerce/utilities/routes.dart';
 import 'package:ecommerce/views/pages/auth_page.dart';
 import 'package:ecommerce/views/pages/bottom_nav_bar_page.dart';
 import 'package:ecommerce/views/pages/home_page.dart';
+import 'package:ecommerce/views/pages/landing_page.dart';
 import 'package:flutter/cupertino.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -24,7 +25,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case AppRoutes.landingPageRoute:
     default:
       return CupertinoPageRoute(
-        builder: (_) => Container(),
+        builder: (_) => const LandingPage(),
+        settings: settings,
       );
   }
 }
