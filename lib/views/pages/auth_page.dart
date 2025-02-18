@@ -133,7 +133,9 @@ class _AuthPageState extends State<AuthPage> {
                             ? 'Login'
                             : 'Register',
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {}
+                          if (formKey.currentState!.validate()) {
+                            submit(model);
+                          }
                         },
                       ),
                       const SizedBox(height: 16.0),
