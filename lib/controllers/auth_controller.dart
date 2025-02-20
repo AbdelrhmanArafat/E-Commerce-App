@@ -15,6 +15,14 @@ class AuthController with ChangeNotifier {
     this.authFromType = AuthFormType.login,
   });
 
+  Future<void> logout() async {
+    try {
+      await auth.logout();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> submit() async {
     try {
       if (authFromType == AuthFormType.login) {

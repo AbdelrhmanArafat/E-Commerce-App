@@ -1,4 +1,5 @@
 import 'package:ecommerce/views/pages/home_page.dart';
+import 'package:ecommerce/views/pages/profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
@@ -19,7 +20,7 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
       Container(),
       Container(),
       Container(),
-      Container(),
+      const ProfilePage(),
     ];
   }
 
