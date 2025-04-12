@@ -1,4 +1,5 @@
 import 'package:ecommerce/controllers/auth_controller.dart';
+import 'package:ecommerce/controllers/database_controller.dart';
 import 'package:ecommerce/services/auth.dart';
 import 'package:ecommerce/views/pages/auth_page.dart';
 import 'package:ecommerce/views/pages/bottom_nav_bar_page.dart';
@@ -25,7 +26,10 @@ class LandingPage extends StatelessWidget {
           }
           return ChangeNotifierProvider<AuthController>(
             create: (_) => AuthController(auth: auth),
-            child: const BottomNavBarPage(),
+            child: Provider(
+              create: (_) => FireStoreDatabase(user.uid),
+              child: const BottomNavBarPage(),
+            ),
           );
         }
         return const Scaffold(

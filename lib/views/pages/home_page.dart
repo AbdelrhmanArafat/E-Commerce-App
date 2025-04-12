@@ -1,7 +1,9 @@
+import 'package:ecommerce/controllers/database_controller.dart';
 import 'package:ecommerce/models/porduct.dart';
 import 'package:ecommerce/utilities/assets.dart';
 import 'package:ecommerce/views/widgets/home_list_item.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -49,6 +51,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final database = Provider.of<Database>(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -99,16 +102,30 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 8),
                   SizedBox(
                     height: 300,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: dummyProduct
-                          .map(
-                            (e) => Padding(
+                    child: StreamBuilder<List<ProductModel>>(
+                      stream: database.salesProductStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.active) {
+                          final products = snapshot.data;
+                          if (products == null || products.isEmpty) {
+                            return const Center(
+                              child: Text('No Products Found!'),
+                            );
+                          }
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (_, index) => Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: HomeListItem(product: e),
+                              child: HomeListItem(product: products[index]),
                             ),
-                          )
-                          .toList(),
+                            itemCount: products.length,
+                          );
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
                     ),
                   ),
                   buildHeaderOfList(
@@ -119,16 +136,30 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 8),
                   SizedBox(
                     height: 300,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: dummyProduct
-                          .map(
-                            (e) => Padding(
+                    child: StreamBuilder<List<ProductModel>>(
+                      stream: database.newProductStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.active) {
+                          final products = snapshot.data;
+                          if (products == null || products.isEmpty) {
+                            return const Center(
+                              child: Text('No Products Found!'),
+                            );
+                          }
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (_, index) => Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: HomeListItem(product: e),
+                              child: HomeListItem(product: products[index]),
                             ),
-                          )
-                          .toList(),
+                            itemCount: products.length,
+                          );
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
                     ),
                   ),
                 ],

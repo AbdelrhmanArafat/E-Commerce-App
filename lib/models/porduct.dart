@@ -1,6 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:ecommerce/utilities/assets.dart';
-
 class ProductModel {
   final String id;
   final String title;
@@ -8,7 +5,7 @@ class ProductModel {
   final String imageUrl;
   final int discount;
   final String? category;
-  final double? rate;
+  final int? rate;
 
   ProductModel({
     required this.id,
@@ -39,44 +36,8 @@ class ProductModel {
       price: map['price'] as int,
       imageUrl: map['imageUrl'] as String,
       discount: map['discount'] as int,
-      category: map['category'] != null ? map['category'] as String : null,
-      rate: map['rate'] != null ? map['rate'] as double : null,
+      category: map['category'] as String,
+      rate: map['rate'] as int,
     );
   }
 }
-
-List<ProductModel> dummyProduct = [
-  ProductModel(
-    id: "1",
-    title: 'T-shirt',
-    price: 300,
-    imageUrl: AppAssets.tempProductAsset1,
-    category: 'Clothes',
-    discount: 20,
-    rate: 4,
-  ),
-  ProductModel(
-    id: "1",
-    title: 'T-shirt',
-    price: 300,
-    imageUrl: AppAssets.tempProductAsset1,
-    discount: 20,
-    rate: 4,
-  ),
-  ProductModel(
-    id: "1",
-    title: 'T-shirt',
-    price: 300,
-    imageUrl: AppAssets.tempProductAsset1,
-    category: 'Clothes',
-    rate: 4,
-  ),
-  ProductModel(
-    id: "1",
-    title: 'T-shirt',
-    price: 300,
-    imageUrl: AppAssets.tempProductAsset1,
-    category: 'Clothes',
-    discount: 20,
-  ),
-];
