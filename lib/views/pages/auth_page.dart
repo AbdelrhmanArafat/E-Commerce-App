@@ -10,7 +10,6 @@ class AuthPage extends StatefulWidget {
   @override
   State<AuthPage> createState() => _AuthPageState();
 }
-
 class _AuthPageState extends State<AuthPage> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
@@ -115,6 +114,7 @@ class _AuthPageState extends State<AuthPage> {
                         ),
                       ),
                       const SizedBox(height: 16.0),
+                      //Forget password on login 
                       if (model.authFromType == AuthFormType.login)
                         Align(
                           alignment: Alignment.topRight,
@@ -135,6 +135,7 @@ class _AuthPageState extends State<AuthPage> {
                         },
                       ),
                       const SizedBox(height: 16.0),
+                      //toggle between login and register
                       Align(
                         alignment: Alignment.center,
                         child: InkWell(

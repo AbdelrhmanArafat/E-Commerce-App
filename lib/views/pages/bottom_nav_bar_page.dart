@@ -12,7 +12,8 @@ class BottomNavBarPage extends StatefulWidget {
 }
 
 class _BottomNavBarPageState extends State<BottomNavBarPage> {
-  final PersistentTabController bottomNavBarController = PersistentTabController();
+  final PersistentTabController bottomNavBarController =
+      PersistentTabController();
 
   List<Widget> buildScreens() {
     return [
@@ -62,22 +63,23 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PersistentTabView(
-      context,
-      controller: bottomNavBarController,
-      screens: buildScreens(),
-      items: navBarsItems(),
-      confineToSafeArea: true,
-      backgroundColor: Colors.white,
-      handleAndroidBackButtonPress: true,
-      resizeToAvoidBottomInset: true,
-      stateManagement: true,
-      decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        colorBehindNavBar: Colors.white,
+      body: PersistentTabView(
+        context,
+        controller: bottomNavBarController,
+        screens: buildScreens(),
+        items: navBarsItems(),
+        confineToSafeArea: true,
+        backgroundColor: Colors.white,
+        handleAndroidBackButtonPress: true,
+        resizeToAvoidBottomInset: true,
+        stateManagement: true,
+        decoration: NavBarDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          colorBehindNavBar: Colors.white,
+        ),
+        hideNavigationBarWhenKeyboardAppears: true,
+        navBarStyle: NavBarStyle.style1,
       ),
-      hideNavigationBarWhenKeyboardAppears: true,
-      navBarStyle: NavBarStyle.style1,
-    ));
+    );
   }
 }
