@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:ecommerce/models/porduct.dart';
+import 'package:ecommerce/models/product.dart';
 import 'package:ecommerce/services/firestore_services.dart';
 import 'package:ecommerce/utilities/api_path.dart';
 

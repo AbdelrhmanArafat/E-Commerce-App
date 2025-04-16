@@ -1,4 +1,5 @@
-import 'package:ecommerce/models/porduct.dart';
+import 'package:ecommerce/models/product.dart';
+import 'package:ecommerce/utilities/routes.dart';
 import 'package:flutter/material.dart';
 
 class HomeListItem extends StatelessWidget {
@@ -8,8 +9,14 @@ class HomeListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(),
+    return InkWell(
+      onTap: () => Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pushNamed(
+        AppRoutes.productDetailsPageRoute,
+        arguments: product,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -39,10 +46,12 @@ class HomeListItem extends StatelessWidget {
                       child: Center(
                         child: Text(
                           '${product.discount}%',
-                          style:
-                              Theme.of(context).textTheme.titleSmall!.copyWith(
-                                    color: Colors.white,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                color: Colors.white,
+                              ),
                         ),
                       ),
                     ),

@@ -1,5 +1,5 @@
 import 'package:ecommerce/controllers/database_controller.dart';
-import 'package:ecommerce/models/porduct.dart';
+import 'package:ecommerce/models/product.dart';
 import 'package:ecommerce/utilities/assets.dart';
 import 'package:ecommerce/views/widgets/home_list_item.dart';
 import 'package:flutter/material.dart';
