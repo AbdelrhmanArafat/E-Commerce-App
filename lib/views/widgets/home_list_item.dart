@@ -1,6 +1,7 @@
 import 'package:ecommerce/models/product.dart';
 import 'package:ecommerce/utilities/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class HomeListItem extends StatelessWidget {
   final ProductModel product;
@@ -46,12 +47,10 @@ class HomeListItem extends StatelessWidget {
                       child: Center(
                         child: Text(
                           '${product.discount}%',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(
-                                color: Colors.white,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleSmall!.copyWith(
+                                    color: Colors.white,
+                                  ),
                         ),
                       ),
                     ),
@@ -59,6 +58,17 @@ class HomeListItem extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 8),
+          RatingBarIndicator(
+            itemPadding: const EdgeInsets.symmetric(horizontal: 2),
+            itemSize: 25,
+            rating: product.rate?.toDouble() ?? 0,
+            itemBuilder: (context, _) => const Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            direction: Axis.horizontal,
           ),
           const SizedBox(height: 8),
           Text(

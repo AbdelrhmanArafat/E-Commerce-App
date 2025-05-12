@@ -1,52 +1,13 @@
 import 'package:ecommerce/controllers/database_controller.dart';
 import 'package:ecommerce/models/product.dart';
 import 'package:ecommerce/utilities/assets.dart';
+import 'package:ecommerce/views/widgets/header_of_list.dart';
 import 'package:ecommerce/views/widgets/home_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-  Widget buildHeaderOfList(
-    BuildContext context, {
-    required String title,
-    VoidCallback? onTap,
-    required String description,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-            ),
-            InkWell(
-              onTap: onTap,
-              child: Text(
-                'View All',
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: Colors.grey,
-                    ),
-              ),
-            ),
-          ],
-        ),
-        Text(
-          description,
-          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: Colors.grey,
-              ),
-        ),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,8 +55,8 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
-                  buildHeaderOfList(
-                    context,
+                  HeaderOfList(
+                    onTap: (){},
                     title: 'Sale',
                     description: 'Super Summer Sale',
                   ),
@@ -128,8 +89,8 @@ class HomePage extends StatelessWidget {
                       },
                     ),
                   ),
-                  buildHeaderOfList(
-                    context,
+                  HeaderOfList(
+                    onTap: (){},
                     title: 'New',
                     description: 'Super New Product!',
                   ),
