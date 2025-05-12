@@ -56,13 +56,13 @@ class HomePage extends StatelessWidget {
               child: Column(
                 children: [
                   HeaderOfList(
-                    onTap: (){},
+                    onTap: () {},
                     title: 'Sale',
                     description: 'Super Summer Sale',
                   ),
                   const SizedBox(height: 8),
                   SizedBox(
-                    height: 300,
+                    height: 330,
                     child: StreamBuilder<List<ProductModel>>(
                       stream: database.salesProductStream(),
                       builder: (context, snapshot) {
@@ -78,7 +78,10 @@ class HomePage extends StatelessWidget {
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (_, index) => Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: HomeListItem(product: products[index]),
+                              child: HomeListItem(
+                                product: products[index],
+                                isNew: true,
+                              ),
                             ),
                             itemCount: products.length,
                           );
@@ -89,14 +92,15 @@ class HomePage extends StatelessWidget {
                       },
                     ),
                   ),
+                  const SizedBox(height: 12),
                   HeaderOfList(
-                    onTap: (){},
+                    onTap: () {},
                     title: 'New',
                     description: 'Super New Product!',
                   ),
                   const SizedBox(height: 8),
                   SizedBox(
-                    height: 300,
+                    height: 330,
                     child: StreamBuilder<List<ProductModel>>(
                       stream: database.newProductStream(),
                       builder: (context, snapshot) {
@@ -112,7 +116,10 @@ class HomePage extends StatelessWidget {
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (_, index) => Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: HomeListItem(product: products[index]),
+                              child: HomeListItem(
+                                product: products[index],
+                                isNew: true,
+                              ),
                             ),
                             itemCount: products.length,
                           );
