@@ -1,7 +1,12 @@
+import 'package:ecommerce/controllers/database_controller.dart';
+import 'package:ecommerce/models/add_to_cart.dart';
 import 'package:ecommerce/models/product.dart';
+import 'package:ecommerce/utilities/constants.dart';
 import 'package:ecommerce/views/widgets/drop_down_menu.dart';
 import 'package:ecommerce/views/widgets/main_button.dart';
+import 'package:ecommerce/views/widgets/main_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final ProductModel product;
@@ -21,6 +26,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final database = Provider.of<Database>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -52,6 +58,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // dropDownMenu, Favorite Icon
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -130,8 +137,27 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 24),
+                  // Add to Cart Button
                   MainButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      try {
+                        final addToCart = AddToCartModel(
+                          id: documentIdFromLocalData(),
+                          productId: widget.product.id,
+                          title: widget.product.title,
+                          price: widget.product.price,
+                          imageUrl: widget.product.imageUrl,
+                          size: dropDownValue,
+                        );
+                        await database.addToCart(addToCart);
+                      } on Exception catch (_) {
+                        return MainDialog(
+                          context: context,
+                          title: 'Error',
+                          content: 'Couldn\'t add to cart, please try again!',
+                        ).showAlertDialog();
+                      }
+                    },
                     text: 'Add to Cart',
                     hasCircleBorder: true,
                   ),
