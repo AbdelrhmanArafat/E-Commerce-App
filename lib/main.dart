@@ -1,3 +1,4 @@
+import 'package:ecommerce/controllers/database_controller.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/services/auth.dart';
 import 'package:ecommerce/utilities/router.dart';
@@ -17,8 +18,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<AuthBase>(
-      create: (_) => Auth(),
+    return MultiProvider(
+      providers: [
+        Provider<AuthBase>(
+          create: (_) => Auth(),
+        ),
+        ProxyProvider<AuthBase, Database>(
+          update: (_, auth, __) =>
+              FireStoreDatabase(auth.currentUser?.uid ?? ''),
+        ),
+      ],
       child: MaterialApp(
         title: 'E-commerce App',
         debugShowCheckedModeBanner: false,

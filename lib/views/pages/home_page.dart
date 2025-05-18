@@ -66,6 +66,11 @@ class HomePage extends StatelessWidget {
                     child: StreamBuilder<List<ProductModel>>(
                       stream: database.salesProductStream(),
                       builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        }
                         if (snapshot.connectionState ==
                             ConnectionState.active) {
                           final products = snapshot.data;
@@ -104,6 +109,11 @@ class HomePage extends StatelessWidget {
                     child: StreamBuilder<List<ProductModel>>(
                       stream: database.newProductStream(),
                       builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        }
                         if (snapshot.connectionState ==
                             ConnectionState.active) {
                           final products = snapshot.data;
