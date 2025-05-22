@@ -1,6 +1,8 @@
 import 'package:ecommerce/controllers/auth_controller.dart';
+import 'package:ecommerce/utilities/assets.dart';
 import 'package:ecommerce/utilities/enums.dart';
 import 'package:ecommerce/views/widgets/main_button.dart';
+import 'package:ecommerce/views/widgets/social_media_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +12,7 @@ class AuthPage extends StatefulWidget {
   @override
   State<AuthPage> createState() => _AuthPageState();
 }
+
 class _AuthPageState extends State<AuthPage> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
@@ -100,9 +103,8 @@ class _AuthPageState extends State<AuthPage> {
                       TextFormField(
                         controller: passwordController,
                         focusNode: passwordFocusNode,
-                        validator: (val) => val!.isEmpty
-                            ? 'Please Enter your Password'
-                            : null,
+                        validator: (val) =>
+                            val!.isEmpty ? 'Please Enter your Password' : null,
                         onChanged: model.updatePassword,
                         obscureText: true,
                         decoration: InputDecoration(
@@ -114,7 +116,7 @@ class _AuthPageState extends State<AuthPage> {
                         ),
                       ),
                       const SizedBox(height: 16.0),
-                      //Forget password on login 
+                      //Forget password on login
                       if (model.authFromType == AuthFormType.login)
                         Align(
                           alignment: Alignment.topRight,
@@ -164,26 +166,14 @@ class _AuthPageState extends State<AuthPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            height: 80,
-                            width: 80,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0),
-                              color: Colors.white,
-                            ),
-                            //todo: add google icon
-                            child: const Icon(Icons.add),
+                          SocialMediaButton(
+                            iconName: AppAssets.googleIcon,
+                            onTap: () {},
                           ),
                           const SizedBox(width: 16.0),
-                          Container(
-                            height: 80,
-                            width: 80,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0),
-                              color: Colors.white,
-                            ),
-                            //todo: add facebook icon
-                            child: const Icon(Icons.add),
+                          SocialMediaButton(
+                            iconName: AppAssets.facebookIcon,
+                            onTap: () {},
                           ),
                         ],
                       ),
