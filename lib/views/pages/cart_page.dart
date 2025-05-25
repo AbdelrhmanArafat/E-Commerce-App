@@ -1,7 +1,9 @@
 import 'package:ecommerce/controllers/database_controller.dart';
 import 'package:ecommerce/models/add_to_cart.dart';
+import 'package:ecommerce/utilities/routes.dart';
 import 'package:ecommerce/views/widgets/cart_list_item.dart';
 import 'package:ecommerce/views/widgets/main_button.dart';
+import 'package:ecommerce/views/widgets/order_summary_component.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +21,7 @@ class _CartPageState extends State<CartPage> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     final myProducts = await Provider.of<Database>(context, listen: false)
-        .myProductCart()
+        .myProductCartStream()
         .first;
     myProducts.forEach(
       (products) {
@@ -33,7 +35,7 @@ class _CartPageState extends State<CartPage> {
     final database = Provider.of<Database>(context);
     return SafeArea(
       child: StreamBuilder<List<AddToCartModel>>(
-          stream: database.myProductCart(),
+          stream: database.myProductCartStream(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.active) {
               final cartItems = snapshot.data;
@@ -88,27 +90,16 @@ class _CartPageState extends State<CartPage> {
                           },
                         ),
                       const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Total Amount',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(
-                                  color: Colors.grey,
-                                ),
-                          ),
-                          Text(
-                            totalAmount.toString(),
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                        ],
+                      OrderSummaryComponent(
+                        title: 'Total Amount',
+                        value: totalAmount.toString(),
                       ),
                       const SizedBox(height: 32),
                       MainButton(
-                        onPressed: () {},
+                        onPressed: () => Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).pushNamed(AppRoutes.checkoutPageRoute),
                         text: 'Checkout',
                         hasCircleBorder: true,
                       ),

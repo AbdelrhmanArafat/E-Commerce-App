@@ -2,6 +2,7 @@ import 'package:ecommerce/models/product.dart';
 import 'package:ecommerce/utilities/routes.dart';
 import 'package:ecommerce/views/pages/auth_page.dart';
 import 'package:ecommerce/views/pages/bottom_nav_bar_page.dart';
+import 'package:ecommerce/views/pages/checkout/checkout_page.dart';
 import 'package:ecommerce/views/pages/home_page.dart';
 import 'package:ecommerce/views/pages/landing_page.dart';
 import 'package:ecommerce/views/pages/product_details.dart';
@@ -28,6 +29,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       final product = settings.arguments as ProductModel;
       return CupertinoPageRoute(
         builder: (_) => ProductDetailsPage(product: product),
+        settings: settings,
+      );
+    case AppRoutes.checkoutPageRoute:
+      return CupertinoPageRoute(
+        builder: (_) => const CheckoutPage(),
         settings: settings,
       );
     case AppRoutes.landingPageRoute:
