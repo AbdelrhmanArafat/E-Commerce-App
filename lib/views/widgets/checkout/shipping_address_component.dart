@@ -1,10 +1,17 @@
+import 'package:ecommerce/controllers/database_controller.dart';
+import 'package:ecommerce/models/shipping_address.dart';
+import 'package:ecommerce/utilities/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ShippingAddressComponent extends StatelessWidget {
-  const ShippingAddressComponent({super.key});
+  final ShippingAddressModel shippingAddress;
+
+  const ShippingAddressComponent({super.key, required this.shippingAddress});
 
   @override
   Widget build(BuildContext context) {
+    final database = Provider.of<Database>(context);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -12,18 +19,22 @@ class ShippingAddressComponent extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'joe',
+                  shippingAddress.fullName,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).pushNamed(
+                    AppRoutes.shippingAddressesPageRoute,
+                    arguments: database,
+                  ),
                   child: Text(
                     'Change',
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
@@ -35,11 +46,13 @@ class ShippingAddressComponent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '19 Abdelrouaf Mohamed Street',
+              shippingAddress.address,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Text(
-              'Cairo, Egypt',
+              '${shippingAddress.city},'
+              ' ${shippingAddress.state},'
+              ' ${shippingAddress.country}',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],

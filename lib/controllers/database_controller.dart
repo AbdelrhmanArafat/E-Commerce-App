@@ -1,7 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:ecommerce/models/add_to_cart.dart';
 import 'package:ecommerce/models/delivery_method.dart';
 import 'package:ecommerce/models/product.dart';
+import 'package:ecommerce/models/shipping_address.dart';
 import 'package:ecommerce/models/user.dart';
 import 'package:ecommerce/services/firestore_services.dart';
 import 'package:ecommerce/utilities/api_path.dart';
@@ -10,10 +10,11 @@ abstract class Database {
   Stream<List<ProductModel>> salesProductStream();
   Stream<List<ProductModel>> newProductStream();
   Stream<List<AddToCartModel>> myProductCartStream();
-
   Stream<List<DeliveryMethodModel>> myDeliveryMethodsStream();
+  Stream<List<ShippingAddressModel>> getShippingAddresses();
   Future<void> getUserData(UserModel user);
   Future<void> addToCart(AddToCartModel addToCart);
+  Future<void> saveAddress(ShippingAddressModel saveAddress);
 }
 
 class FireStoreDatabase implements Database {
@@ -60,7 +61,26 @@ class FireStoreDatabase implements Database {
   Stream<List<DeliveryMethodModel>> myDeliveryMethodsStream() =>
       services.collectionStream(
         path: ApiPaths.deliveryMethod(),
-        builder:(data, documentId) => 
-            DeliveryMethodModel.fromMap(data!, documentId),
+        builder: (data, documentId) => DeliveryMethodModel.fromMap(
+          data!,
+          documentId,
+        ),
+      );
+
+  @override
+  Stream<List<ShippingAddressModel>> getShippingAddresses() =>
+      services.collectionStream(
+        path: ApiPaths.userShippingAddress(uid),
+        builder: (data, documentId) => ShippingAddressModel.fromMap(
+          data!,
+          documentId,
+        ),
+      );
+
+  @override
+  Future<void> saveAddress(ShippingAddressModel saveAddress) =>
+      services.setData(
+        path: ApiPaths.newAddress(uid, saveAddress.id),
+        data: saveAddress.toMap(),
       );
 }

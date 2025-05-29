@@ -9,5 +9,5 @@ class AppAssets {
 
   //checkout Page Assets
   static const String masterCardIcon =
-      'https://w7.pngwing.com/pngs/654/477/png-transparent-card-master-master-card-master-card-new-logo-method-new-logo-payment-logos-icon.png';
-  }
+      'https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png';
+}
