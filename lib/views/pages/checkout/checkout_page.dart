@@ -1,6 +1,7 @@
 import 'package:ecommerce/controllers/database_controller.dart';
 import 'package:ecommerce/models/delivery_method.dart';
 import 'package:ecommerce/models/shipping_address.dart';
+import 'package:ecommerce/utilities/arguments_model/add_shipping_address_arguments.dart';
 import 'package:ecommerce/utilities/routes.dart';
 import 'package:ecommerce/views/widgets/checkout/checkout_delivery_detials.dart';
 import 'package:ecommerce/views/widgets/checkout/delivery_method_item.dart';
@@ -59,7 +60,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               InkWell(
                                 onTap: () => Navigator.of(context).pushNamed(
                                   AppRoutes.addShippingAddressPageRoute,
-                                  arguments: database,
+                                  arguments: AddShippingAddressArguments(
+                                    database: database,
+                                  ),
                                 ),
                                 child: Text(
                                   'Add New Shipping Address',
@@ -93,7 +96,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        AppRoutes.paymentMethodPageRoute,
+                      );
+                    },
                     child: Text(
                       'Change',
                       style: Theme.of(context).textTheme.labelLarge!.copyWith(

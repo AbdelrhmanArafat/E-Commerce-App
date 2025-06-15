@@ -5,6 +5,7 @@ import 'package:ecommerce/views/pages/auth_page.dart';
 import 'package:ecommerce/views/pages/bottom_nav_bar_page.dart';
 import 'package:ecommerce/views/pages/checkout/add_shipping_address_page.dart';
 import 'package:ecommerce/views/pages/checkout/checkout_page.dart';
+import 'package:ecommerce/views/pages/checkout/payment_methods_page.dart';
 import 'package:ecommerce/views/pages/checkout/shipping_addresses_page.dart';
 import 'package:ecommerce/views/pages/home_page.dart';
 import 'package:ecommerce/views/pages/landing_page.dart';
@@ -51,6 +52,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case AppRoutes.shippingAddressesPageRoute:
       return CupertinoPageRoute(
         builder: (_) => const ShippingAddressesPage(),
+        settings: settings,
+      );
+    case AppRoutes.paymentMethodPageRoute:
+      return CupertinoPageRoute(
+        builder: (_) => const PaymentMethodsPage(),
         settings: settings,
       );
     case AppRoutes.landingPageRoute:
