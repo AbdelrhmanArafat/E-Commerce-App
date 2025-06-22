@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
 class MainButton extends StatelessWidget {
-  final Function() onPressed;
-  final String text;
+  final String? text;
   final bool hasCircleBorder;
+  final VoidCallback? onPressed;
+  final Widget? child;
 
-  const MainButton({
+  MainButton({
     super.key,
-    required this.onPressed,
-    required this.text,
+    this.onPressed,
+    this.text,
     this.hasCircleBorder = false,
-  });
+    this.child,
+  }) {
+    assert(text != null || child != null);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +32,7 @@ class MainButton extends StatelessWidget {
                 )
               : null,
         ),
-        child: Text(
-          text,
-          style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-        ),
+        child: text != null ? Text(text!) : child,
       ),
     );
   }

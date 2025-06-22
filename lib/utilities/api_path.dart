@@ -9,4 +9,7 @@ class ApiPaths {
       'users/$uid/shippingAddress/';
   static String newAddress(String uid, String addressId) =>
       'users/$uid/shippingAddress/$addressId';
+  static String addCards(String uid, String cardId) =>
+      'users/$uid/cards/$cardId';
+  static String cards(String uid) => 'users/$uid/cards';
 }

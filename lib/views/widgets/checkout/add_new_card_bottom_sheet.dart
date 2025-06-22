@@ -1,5 +1,8 @@
+import 'package:ecommerce/controllers/cubit/checkout_cubit.dart';
+import 'package:ecommerce/models/payment_method.dart';
 import 'package:ecommerce/views/widgets/main_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddNewCardBottomSheet extends StatefulWidget {
   const AddNewCardBottomSheet({super.key});
@@ -28,7 +31,7 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final checkoutCubit = BlocProvider.of<CheckoutCubit>(context);
     return SizedBox(
       height: size.height * 0.7,
       child: Form(
@@ -41,6 +44,7 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
+            // Card Holder Name Input
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
@@ -56,6 +60,7 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
               ),
             ),
             const SizedBox(height: 16),
+            // Card Number Input
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
@@ -66,13 +71,27 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
                 ),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
-                  String newValue = value.replaceAll('-', '');
-                  if(newValue.length % 4 == 0 && newValue.length < 16) {
-                    cardNumberController.text += '-';
+                  String digitsOnly = value.replaceAll(' - ', '');
+
+                  if (digitsOnly.length > 16) {
+                    digitsOnly = digitsOnly.substring(0, 16);
                   }
-                  if(value.length >= 20) {
-                    cardNumberController.text = value.substring(0, 19);
+
+                  String formatted = '';
+
+                  for (int i = 0; i < digitsOnly.length; i++) {
+                    formatted += digitsOnly[i];
+                    if ((i + 1) % 4 == 0 && i + 1 != digitsOnly.length) {
+                      formatted += ' - ';
+                    }
                   }
+
+                  final cursorPosition = formatted.length;
+
+                  cardNumberController.value = TextEditingValue(
+                    text: formatted,
+                    selection: TextSelection.collapsed(offset: cursorPosition),
+                  );
                 },
                 validator: (value) => value != null && value.isEmpty
                     ? 'Please enter card number'
@@ -80,6 +99,7 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
               ),
             ),
             const SizedBox(height: 16),
+            // Expire Date Input
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
@@ -90,12 +110,25 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
                 ),
                 keyboardType: TextInputType.datetime,
                 onChanged: (value) {
-                  if (value.length == 2 && !value.contains('/')) {
-                    expireDateController.text += '/';
+                  String digitsOnly = value.replaceAll('/', '');
+
+                  if (digitsOnly.length > 4) {
+                    digitsOnly = digitsOnly.substring(0, 4);
                   }
-                  if (value.length == 6 && value.contains('/')) {
-                    expireDateController.text = value.substring(0, 5);
+
+                  String formatted = '';
+                  for (int i = 0; i < digitsOnly.length; i++) {
+                    if (i == 2) {
+                      formatted += '/';
+                    }
+                    formatted += digitsOnly[i];
                   }
+
+                  expireDateController.value = TextEditingValue(
+                    text: formatted,
+                    selection:
+                        TextSelection.collapsed(offset: formatted.length),
+                  );
                 },
                 validator: (value) => value != null && value.isEmpty
                     ? 'Please enter expire date'
@@ -103,6 +136,7 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
               ),
             ),
             const SizedBox(height: 16),
+            // CVV Input
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
@@ -113,25 +147,64 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
                 ),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
-                  if (value.length >= 3) {
-                    cvvController.text = value.substring(0, 3);
+                  if (value.length > 3) {
+                    value = value.substring(0, 3);
                   }
+                  cvvController.value = TextEditingValue(
+                    text: value,
+                    selection: TextSelection.collapsed(offset: value.length),
+                  );
                 },
-                validator: (value) => value != null && value.isEmpty
-                    ? 'Please enter CVV'
-                    : null,
+                validator: (value) =>
+                    value != null && value.isEmpty ? 'Please enter CVV' : null,
               ),
             ),
             const SizedBox(height: 16),
+            // Add Card Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: MainButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    Navigator.of(context).pop();
+              child: BlocConsumer<CheckoutCubit, CheckoutState>(
+                bloc: checkoutCubit,
+                listenWhen: (previous, current) =>
+                    current is CardsAdded || current is CardsAddedFailed,
+                listener: (context, state) {
+                  if (state is CardsAdded) {
+                    Navigator.pop(context);
+                  } else if (state is CardsAddedFailed) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.error),
+                      ),
+                    );
                   }
                 },
-                text: 'Save Card',
+                buildWhen: (previous, current) =>
+                    current is AddingCards ||
+                    current is CardsAdded ||
+                    current is CardsAddedFailed,
+                builder: (context, state) {
+                  if (State is AddingCards) {
+                    return MainButton(
+                      onPressed: null,
+                      child: const CircularProgressIndicator.adaptive(),
+                    );
+                  }
+                  return MainButton(
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        final paymentMethod = PaymentMethodModel(
+                          id: DateTime.now().toIso8601String(),
+                          cardHolderName: cardHolderNameController.text,
+                          cardNumber: cardNumberController.text,
+                          expireDate: expireDateController.text,
+                          cvv: cvvController.text,
+                        );
+                        await checkoutCubit.addCard(paymentMethod);
+                      }
+                    },
+                    text: 'Add Card',
+                  );
+                },
               ),
             ),
           ],

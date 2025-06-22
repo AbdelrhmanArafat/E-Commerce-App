@@ -15,6 +15,7 @@ dependencies:
   firebase_core: ^3.4.1
   flutter:
     sdk: flutter
+  flutter_bloc: ^9.1.1
   flutter_rating_bar: ^4.0.1
   persistent_bottom_nav_bar: ^6.2.1
   persistent_bottom_nav_bar_v2: ^5.3.0
