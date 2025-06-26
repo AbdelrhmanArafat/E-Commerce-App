@@ -1,4 +1,5 @@
 import 'package:ecommerce/controllers/cubit/checkout_cubit.dart';
+import 'package:ecommerce/models/payment_method.dart';
 import 'package:ecommerce/views/widgets/checkout/add_new_card_bottom_sheet.dart';
 import 'package:ecommerce/views/widgets/main_button.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +11,39 @@ class PaymentMethodsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final checkoutCubit = BlocProvider.of<CheckoutCubit>(context);
+
+    Future<void> showModelBottomSheet(PaymentMethodModel? paymentMethod) async {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) {
+          return BlocProvider.value(
+            value: checkoutCubit,
+            child: AddNewCardBottomSheet(paymentMethod: paymentMethod),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payment Methods'),
         centerTitle: true,
       ),
-      body: BlocBuilder<CheckoutCubit, CheckoutState>(
+      body: BlocConsumer<CheckoutCubit, CheckoutState>(
         bloc: checkoutCubit,
+        listenWhen: (previous, current) =>
+            current is CardPreferredMade || 
+            current is CardPreferredFailed,
+        listener: (context, state) {
+          if (state is CardPreferredMade) {
+            Navigator.pop(context);
+          } else if (state is CardPreferredFailed) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
+          }
+        },
         buildWhen: (previous, current) =>
             current is FetchingCards ||
             current is CardsFetched ||
@@ -51,31 +78,60 @@ class PaymentMethodsPage extends StatelessWidget {
                         final paymentMethod = paymentMethods[index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
-                          child: Card(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(Icons.credit_card),
-                                    const SizedBox(width: 8),
-                                    Text(paymentMethod.cardNumber),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      onPressed: () {},
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () {},
-                                    ),
-                                  ],
-                                )
-                              ],
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          child: InkWell(
+                            onTap: () async {
+                              await checkoutCubit
+                                  .makeCardPreferred(paymentMethod);
+                            },
+                            child: Card(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.credit_card),
+                                      const SizedBox(width: 8),
+                                      Text(paymentMethod.cardNumber),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.edit),
+                                        onPressed: () {
+                                          showModelBottomSheet(paymentMethod);
+                                        },
+                                      ),
+                                      BlocBuilder<CheckoutCubit, CheckoutState>(
+                                        bloc: checkoutCubit,
+                                        buildWhen: (previous, current) =>
+                                            current is DeletingCards &&
+                                                current.cardId ==
+                                                    paymentMethod.id ||
+                                            current is CardsDeleted ||
+                                            current is CardsDeletedFailed,
+                                        builder: (context, state) {
+                                          if (state is DeletingCards) {
+                                            return const CircularProgressIndicator
+                                                .adaptive();
+                                          }
+                                          return IconButton(
+                                            icon: const Icon(Icons.delete),
+                                            onPressed: () async {
+                                              await checkoutCubit
+                                                  .deleteCard(paymentMethod);
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         );

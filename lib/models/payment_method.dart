@@ -4,13 +4,15 @@ class PaymentMethodModel {
   final String cardNumber;
   final String expireDate;
   final String cvv;
+  final bool isPreferred;
 
-  PaymentMethodModel({
+  const PaymentMethodModel({
     required this.id,
     required this.cardHolderName,
     required this.cardNumber,
     required this.expireDate,
     required this.cvv,
+    this.isPreferred = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +22,7 @@ class PaymentMethodModel {
       'cardNumber': cardNumber,
       'expiryDate': expireDate,
       'cvv': cvv,
+      'isPreferred': isPreferred,
     };
   }
 
@@ -30,6 +33,25 @@ class PaymentMethodModel {
       cardNumber: map['cardNumber'] as String,
       expireDate: map['expiryDate'] as String,
       cvv: map['cvv'] as String,
+      isPreferred: map['isPreferred'] as bool,
+    );
+  }
+
+  PaymentMethodModel copyWith({
+    String? id,
+    String? cardHolderName,
+    String? cardNumber,
+    String? expireDate,
+    String? cvv,
+    bool? isPreferred,
+  }) {
+    return PaymentMethodModel(
+      id: id ?? this.id,
+      cardHolderName: cardHolderName ?? this.cardHolderName,
+      cardNumber: cardNumber ?? this.cardNumber,
+      expireDate: expireDate ?? this.expireDate,
+      cvv: cvv ?? this.cvv,
+      isPreferred: isPreferred ?? this.isPreferred,
     );
   }
 }

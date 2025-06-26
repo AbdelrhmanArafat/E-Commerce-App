@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddNewCardBottomSheet extends StatefulWidget {
-  const AddNewCardBottomSheet({super.key});
+  final PaymentMethodModel? paymentMethod;
+
+  const AddNewCardBottomSheet({super.key, this.paymentMethod});
 
   @override
   State<AddNewCardBottomSheet> createState() => _AddNewCardBottomSheetState();
@@ -26,6 +28,13 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
     cardNumberController = TextEditingController();
     expireDateController = TextEditingController();
     cvvController = TextEditingController();
+
+    if (widget.paymentMethod != null) {
+      cardHolderNameController.text = widget.paymentMethod!.cardHolderName;
+      cardNumberController.text = widget.paymentMethod!.cardNumber;
+      expireDateController.text = widget.paymentMethod!.expireDate;
+      cvvController.text = widget.paymentMethod!.cvv;
+    }
   }
 
   @override
@@ -39,10 +48,15 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
         child: Column(
           children: [
             const SizedBox(height: 24),
-            Text(
-              'Add New Card',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            widget.paymentMethod != null
+                ? Text(
+                    'Editing Card',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  )
+                : Text(
+                    'Add New Card',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
             const SizedBox(height: 16),
             // Card Holder Name Input
             Padding(
@@ -193,7 +207,9 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         final paymentMethod = PaymentMethodModel(
-                          id: DateTime.now().toIso8601String(),
+                          id: widget.paymentMethod != null
+                              ? widget.paymentMethod!.id
+                              : DateTime.now().toIso8601String(),
                           cardHolderName: cardHolderNameController.text,
                           cardNumber: cardNumberController.text,
                           expireDate: expireDateController.text,
@@ -202,7 +218,8 @@ class _AddNewCardBottomSheetState extends State<AddNewCardBottomSheet> {
                         await checkoutCubit.addCard(paymentMethod);
                       }
                     },
-                    text: 'Add Card',
+                    text:
+                        widget.paymentMethod != null ? 'Edit Card' : 'Add Card',
                   );
                 },
               ),
