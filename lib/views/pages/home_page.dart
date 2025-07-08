@@ -13,8 +13,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final database = Provider.of<Database>(context);
-    return Scaffold(
-      body: SingleChildScrollView(
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -85,7 +86,7 @@ class HomePage extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: HomeListItem(
                                 product: products[index],
-                                isNew: true,
+                                isNew: false,
                               ),
                             ),
                             itemCount: products.length,

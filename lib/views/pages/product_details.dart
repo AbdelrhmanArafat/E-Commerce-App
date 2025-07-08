@@ -47,7 +47,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               widget.product.imageUrl,
               height: size.height * 0.55,
               width: double.infinity,
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
             const SizedBox(height: 8),
             Padding(
@@ -95,7 +95,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 isFavorite
                                     ? Icons.favorite
                                     : Icons.favorite_outline,
-                                color: Colors.black45,
+                                color: isFavorite ? Colors.red : Colors.black45,
                               ),
                             ),
                           ),

@@ -58,7 +58,7 @@ class HomeListItem extends StatelessWidget {
                         child: Text(
                           isNew ? 'New' : '${product.discount}%',
                           style:
-                              Theme.of(context).textTheme.titleSmall!.copyWith(
+                              Theme.of(context).textTheme.labelSmall!.copyWith(
                                     color: Colors.white,
                                   ),
                         ),
@@ -71,8 +71,8 @@ class HomeListItem extends StatelessWidget {
           ),
           //Icon button for favorite
           Positioned(
-            left: size.width * .38,
-            bottom: size.height * .12,
+            left: size.width * .3,
+            bottom: size.height * .19,
             child: Container(
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
@@ -157,6 +157,9 @@ class HomeListItem extends StatelessWidget {
                                     color: Colors.grey,
                                     decoration: TextDecoration.lineThrough,
                                   ),
+                            ),
+                            const WidgetSpan(
+                              child: SizedBox(width: 6),
                             ),
                             TextSpan(
                               text:

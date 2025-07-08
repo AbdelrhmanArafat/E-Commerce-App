@@ -18,7 +18,7 @@ class OrderSummaryComponent extends StatelessWidget {
         Text(
           title,
           style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: Colors.grey,
+                color: Colors.blueGrey,
               ),
         ),
         Text(
