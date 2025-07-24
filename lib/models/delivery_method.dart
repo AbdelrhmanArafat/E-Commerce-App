@@ -29,10 +29,10 @@ class DeliveryMethodModel {
   ) {
     return DeliveryMethodModel(
       id: documentId,
-      name: map['name'] as String,
-      days: map['days'] as String,
-      imageUrl: map['imageUrl'] as String,
-      price: map['price'] as double,
+      name: map['name'] ?? '',
+      days: map['days'] ?? '',
+      imageUrl: map['imageUrl'] ?? '',
+      price: (map['price']?? 0).toDouble(),
     );
   }
 }

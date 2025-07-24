@@ -33,7 +33,7 @@ class PaymentMethodsPage extends StatelessWidget {
       body: BlocConsumer<CheckoutCubit, CheckoutState>(
         bloc: checkoutCubit,
         listenWhen: (previous, current) =>
-            current is CardPreferredMade || 
+            current is CardPreferredMade ||
             current is CardPreferredFailed,
         listener: (context, state) {
           if (state is CardPreferredMade) {
