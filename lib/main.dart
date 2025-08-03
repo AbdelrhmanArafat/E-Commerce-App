@@ -1,16 +1,25 @@
 import 'package:ecommerce/controllers/database_controller.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/services/auth.dart';
+import 'package:ecommerce/utilities/constants.dart';
 import 'package:ecommerce/utilities/router.dart';
 import 'package:ecommerce/utilities/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
+Future<void> main() async {
+  await initSetup();
+  runApp(const MyApp());
+}
+
+Future<void> initSetup () async {
+  await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  Stripe.publishableKey = AppConstants.publishableKey;
 }
 
 class MyApp extends StatelessWidget {

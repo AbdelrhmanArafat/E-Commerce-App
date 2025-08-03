@@ -39,7 +39,10 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       );
     case AppRoutes.checkoutPageRoute:
       return CupertinoPageRoute(
-        builder: (_) => const CheckoutPage(),
+        builder: (_) => BlocProvider(
+          create: (context) => CheckoutCubit(),
+          child: const CheckoutPage(),
+        ),
         settings: settings,
       );
     case AppRoutes.addShippingAddressPageRoute:

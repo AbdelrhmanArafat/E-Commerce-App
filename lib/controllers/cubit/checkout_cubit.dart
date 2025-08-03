@@ -1,5 +1,6 @@
 import 'package:ecommerce/models/payment_method.dart';
 import 'package:ecommerce/services/checkout_services.dart';
+import 'package:ecommerce/services/stripe_services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -8,6 +9,17 @@ part 'checkout_state.dart';
 class CheckoutCubit extends Cubit<CheckoutState> {
   CheckoutCubit() : super(CheckoutInitial());
   final checkoutServices = CheckoutServices();
+  final stripeServices = StripeServices.instance;
+
+  Future<void> makePayment(double amount) async {
+    emit(MakingPayment());
+    try {
+      await stripeServices.makePayment(amount, 'usd');
+      emit(PaymentMade());
+    } catch (error) {
+      emit(MakingPaymentFailed(error.toString()));
+    }
+  }
 
   Future<void> addCard(PaymentMethodModel paymentMethod) async {
     emit(AddingCards());
@@ -49,7 +61,8 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         final newPaymentMethod = method.copyWith(isPreferred: false);
         await checkoutServices.setPaymentMethod(newPaymentMethod);
       }
-      final newPreferredPaymentMethod = paymentMethod.copyWith(isPreferred: true);
+      final newPreferredPaymentMethod =
+          paymentMethod.copyWith(isPreferred: true);
       await checkoutServices.setPaymentMethod(newPreferredPaymentMethod);
       emit(CardPreferredMade());
     } catch (error) {

@@ -1,3 +1,4 @@
+import 'package:ecommerce/controllers/cubit/checkout_cubit.dart';
 import 'package:ecommerce/controllers/database_controller.dart';
 import 'package:ecommerce/models/delivery_method.dart';
 import 'package:ecommerce/models/shipping_address.dart';
@@ -9,6 +10,7 @@ import 'package:ecommerce/views/widgets/checkout/payment_component.dart';
 import 'package:ecommerce/views/widgets/checkout/shipping_address_component.dart';
 import 'package:ecommerce/views/widgets/main_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -23,6 +25,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final database = Provider.of<Database>(context);
+    final checkoutCubit = BlocProvider.of<CheckoutCubit>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -43,6 +46,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
+              // StreamBuilder to fetch shipping addresses
               StreamBuilder<List<ShippingAddressModel>>(
                   stream: database.getShippingAddresses(),
                   builder: (context, snapshot) {
@@ -118,6 +122,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
+              // StreamBuilder to fetch delivery methods
               StreamBuilder<List<DeliveryMethodModel>>(
                   stream: database.myDeliveryMethodsStream(),
                   builder: (context, snapshot) {
@@ -133,7 +138,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: deliveryMethods.length,
-                          itemBuilder: (context, index) => DeliveryMethodItem(
+                          itemBuilder: (_, index) => DeliveryMethodItem(
                             deliveryMethodModel: deliveryMethods[index],
                           ),
                         ),
@@ -146,10 +151,41 @@ class _CheckoutPageState extends State<CheckoutPage> {
               const SizedBox(height: 32),
               const CheckoutDeliveryDetails(),
               const SizedBox(height: 64),
-              MainButton(
-                onPressed: () {},
-                text: 'Submit Order',
-                hasCircleBorder: true,
+              BlocConsumer<CheckoutCubit, CheckoutState>(
+                bloc: checkoutCubit,
+                listenWhen: (previous, current) =>
+                    current is MakingPaymentFailed || current is PaymentMade,
+                listener: (context, state) {
+                  if (state is MakingPaymentFailed) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.error),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  } else if (state is PaymentMade) {
+                    Navigator.of(context).popUntil(
+                      (route) => route.isFirst,
+                    );
+                  }
+                },
+                buildWhen: (previous, current) =>
+                    current is PaymentMade ||
+                    current is MakingPaymentFailed ||
+                    current is MakingPayment,
+                builder: (context, state) {
+                  if (state is MakingPayment) {
+                    return MainButton(
+                      hasCircleBorder: true,
+                      child: const CircularProgressIndicator.adaptive(),
+                    );
+                  }
+                  return MainButton(
+                    onPressed: () async => await checkoutCubit.makePayment(900),
+                    text: 'Submit Order',
+                    hasCircleBorder: true,
+                  );
+                },
               ),
             ],
           ),

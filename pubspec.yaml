@@ -11,13 +11,16 @@ environment:
 dependencies:
   cloud_firestore: ^5.4.1
   cupertino_icons: ^1.0.6
+  dio: ^5.8.0+1
   firebase_auth: ^5.2.1
   firebase_core: ^3.4.1
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_dotenv: ^5.2.1
   flutter_rating_bar: ^4.0.1
   flutter_stripe: ^11.5.0
+  flutter_stripe_web: ^6.5.1
   persistent_bottom_nav_bar: ^6.2.1
   provider: ^6.1.2
 
@@ -30,3 +33,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
+    - .env
