@@ -26,7 +26,7 @@ class HomeListItem extends StatelessWidget {
         rootNavigator: true,
       ).pushNamed(
         AppRoutes.productDetailsPageRoute,
-        arguments: product,
+        arguments: product.id,
       ),
       child: Stack(
         children: [

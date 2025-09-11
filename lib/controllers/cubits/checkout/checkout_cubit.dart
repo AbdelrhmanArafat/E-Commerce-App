@@ -1,15 +1,18 @@
+import 'package:ecommerce/models/delivery_method.dart';
 import 'package:ecommerce/models/payment_method.dart';
+import 'package:ecommerce/models/shipping_address.dart';
+import 'package:ecommerce/services/auth_services.dart';
 import 'package:ecommerce/services/checkout_services.dart';
 import 'package:ecommerce/services/stripe_services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-
 part 'checkout_state.dart';
 
 class CheckoutCubit extends Cubit<CheckoutState> {
   CheckoutCubit() : super(CheckoutInitial());
   final checkoutServices = CheckoutServices();
   final stripeServices = StripeServices.instance;
+  final authServices = AuthServicesImplement();
 
   Future<void> makePayment(double amount) async {
     emit(MakingPayment());
@@ -69,4 +72,48 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       emit(CardPreferredFailed(error.toString()));
     }
   }
+
+  Future<void> getCheckoutData() async {
+    emit(CheckoutLoading());
+    try {
+      final currentUser = authServices.currentUser;
+      final shippingAddresses =
+          await checkoutServices.shippingAddresses(currentUser!.uid);
+      final deliveryMethods = await checkoutServices.deliveryMethods();
+      emit(
+        CheckoutLoaded(
+          shippingAddresses: shippingAddresses.isEmpty
+              ? null
+              : shippingAddresses[0],
+          deliveryMethods: deliveryMethods,
+        ),
+      );
+    } catch (e) {
+      emit(CheckoutLoadedFailed(e.toString()));
+    }
+  }
+
+  Future<void> getShippingAddresses() async {
+    emit(FetchingAddresses());
+    try {
+      final currentUser = authServices.currentUser;
+      final shippingAddresses =
+          await checkoutServices.shippingAddresses(currentUser!.uid);
+      emit(AddressesFetched(shippingAddresses));
+    } catch (error) {
+      emit(AddressesFetchFailed(error.toString()));
+    }
+  }
+
+  Future<void> saveAddress(ShippingAddressModel address) async {
+    emit(AddingAddresses());
+    try {
+      final currentUser = authServices.currentUser;
+      await checkoutServices.saveAddress(address, currentUser!.uid);
+      emit(AddressesAdded());
+    } catch (error) {
+      emit(AddressesAddedFailed(error.toString()));
+    }
+  }
+
 }

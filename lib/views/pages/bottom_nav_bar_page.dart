@@ -1,8 +1,11 @@
+import 'package:ecommerce/controllers/cubits/cart/cart_cubit.dart';
+import 'package:ecommerce/controllers/cubits/home/home_cubit.dart';
 import 'package:ecommerce/views/pages/cart_page.dart';
 import 'package:ecommerce/views/pages/home_page.dart';
 import 'package:ecommerce/views/pages/profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class BottomNavBarPage extends StatefulWidget {
@@ -18,9 +21,23 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
 
   List<Widget> buildScreens() {
     return [
-      const HomePage(),
+      BlocProvider(
+        create: (context) {
+          final cubit = HomeCubit();
+          cubit.getHomeContent();
+          return cubit;
+        },
+        child: const HomePage(),
+      ),
       Container(),
-      const CartPage(),
+      BlocProvider(
+        create: (context) {
+          final cubit = CartCubit();
+          cubit.fetchCartProducts();
+          return cubit;
+        },
+        child: const CartPage(),
+      ),
       Container(),
       const ProfilePage(),
     ];

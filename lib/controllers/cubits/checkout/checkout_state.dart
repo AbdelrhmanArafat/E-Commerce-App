@@ -5,6 +5,48 @@ sealed class CheckoutState {}
 
 final class CheckoutInitial extends CheckoutState {}
 
+final class CheckoutLoading extends CheckoutState {}
+
+final class CheckoutLoaded extends CheckoutState {
+  final ShippingAddressModel? shippingAddresses;
+  final List<DeliveryMethodModel> deliveryMethods;
+
+  CheckoutLoaded({
+    this.shippingAddresses,
+    required this.deliveryMethods,
+  });
+}
+
+final class CheckoutLoadedFailed extends CheckoutState {
+  final String error;
+
+  CheckoutLoadedFailed(this.error);
+}
+
+final class FetchingAddresses extends CheckoutState {}
+
+final class AddressesFetched extends CheckoutState {
+  final List<ShippingAddressModel> shippingAddresses;
+
+  AddressesFetched(this.shippingAddresses);
+}
+
+final class AddressesFetchFailed extends CheckoutState {
+  final String error;
+
+  AddressesFetchFailed(this.error);
+}
+
+final class AddingAddresses extends CheckoutState {}
+
+final class AddressesAdded extends CheckoutState {}
+
+final class AddressesAddedFailed extends CheckoutState {
+  final String error;
+
+  AddressesAddedFailed(this.error);
+}
+
 final class AddingCards extends CheckoutState {}
 
 final class CardsAdded extends CheckoutState {}

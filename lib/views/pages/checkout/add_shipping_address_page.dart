@@ -1,10 +1,10 @@
-import 'package:ecommerce/controllers/database_controller.dart';
+import 'package:ecommerce/controllers/cubits/checkout/checkout_cubit.dart';
 import 'package:ecommerce/models/shipping_address.dart';
 import 'package:ecommerce/utilities/constants.dart';
 import 'package:ecommerce/views/widgets/main_button.dart';
 import 'package:ecommerce/views/widgets/main_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddShippingAddressPage extends StatefulWidget {
   final ShippingAddressModel? shippingAddress;
@@ -50,7 +50,7 @@ class _AddShippingAddressPageState extends State<AddShippingAddressPage> {
     super.dispose();
   }
 
-  Future<void> saveAddress(Database database) async {
+  Future<void> saveAddress(CheckoutCubit checkoutCubit) async {
     try {
       if (formKey.currentState!.validate()) {
         final address = ShippingAddressModel(
@@ -64,7 +64,7 @@ class _AddShippingAddressPageState extends State<AddShippingAddressPage> {
           state: stateController.text.trim(),
           zipCode: zipCodeController.text.trim(),
         );
-        await database.saveAddress(address);
+        await checkoutCubit.saveAddress(address);
         if (!mounted) return;
         Navigator.of(context).pop();
       }
@@ -79,7 +79,7 @@ class _AddShippingAddressPageState extends State<AddShippingAddressPage> {
 
   @override
   Widget build(BuildContext context) {
-    final database = Provider.of<Database>(context);
+  final checkoutCubit = BlocProvider.of<CheckoutCubit>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -164,7 +164,7 @@ class _AddShippingAddressPageState extends State<AddShippingAddressPage> {
                 ),
                 const SizedBox(height: 32),
                 MainButton(
-                  onPressed: () => saveAddress(database),
+                  onPressed: () => saveAddress(checkoutCubit),
                   text: 'Save Address',
                   hasCircleBorder: true,
                 ),

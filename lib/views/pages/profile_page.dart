@@ -1,56 +1,59 @@
-import 'package:ecommerce/controllers/auth_controller.dart';
+import 'package:ecommerce/controllers/cubits/auth/auth_cubit.dart';
+import 'package:ecommerce/utilities/routes.dart';
 import 'package:ecommerce/views/widgets/main_button.dart';
+import 'package:ecommerce/views/widgets/main_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
-  Future<void> logout(AuthController model, context) async {
-    try {
-    await model.logout();
-    Navigator.pop(context);
-    } catch (error) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(
-            'Error',
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          content: Text(
-            error.toString(),
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthController>(
-      builder: (_, model, __) {
-        return Scaffold(
-          body: Column(
-            children: [
-              const Spacer(),
-              MainButton(
-                onPressed: () {
-                  logout(model, context);
+    final authCubit = BlocProvider.of<AuthCubit>(context);
+
+    return SafeArea(
+      child: Column(
+        children: [
+          BlocConsumer<AuthCubit, AuthState>(
+            bloc: authCubit,
+            listenWhen: (previous, current) {
+              return current is AuthSuccess || current is AuthInitial;
+            },
+            listener: (context, state) {
+              if (state is AuthFailure) {
+                MainDialog(
+                  context: context,
+                  title: 'Error',
+                  content: state.message,
+                ).showAlertDialog();
+              } else if (state is AuthInitial) {
+                Navigator.of(context, rootNavigator: true).pushReplacementNamed(
+                  AppRoutes.authPageRoute,
+                );
+              }
+            },
+            buildWhen: (previous, current) {
+              return current is AuthInitial ||
+                  current is AuthLoading ||
+                  current is AuthFailure;
+            },
+            builder: (context, state) {
+              if (state is AuthLoading) {
+                return MainButton(
+                  child: const CircularProgressIndicator.adaptive(),
+                );
+              }
+              return MainButton(
+                onPressed: () async {
+                  await authCubit.logout();
                 },
                 text: 'Logout',
-              )
-            ],
-          ),
-        );
-      },
+              );
+            },
+          )
+        ],
+      ),
     );
   }
 }

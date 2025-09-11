@@ -1,4 +1,4 @@
-import 'package:ecommerce/controllers/cubit/checkout_cubit.dart';
+import 'package:ecommerce/controllers/cubits/checkout/checkout_cubit.dart';
 import 'package:ecommerce/models/payment_method.dart';
 import 'package:ecommerce/views/widgets/checkout/add_new_card_bottom_sheet.dart';
 import 'package:ecommerce/views/widgets/main_button.dart';

@@ -22,7 +22,6 @@ dependencies:
   flutter_stripe: ^11.5.0
   flutter_stripe_web: ^6.5.1
   persistent_bottom_nav_bar: ^6.2.1
-  provider: ^6.1.2
 
 dev_dependencies:
   flutter_lints: ^3.0.0

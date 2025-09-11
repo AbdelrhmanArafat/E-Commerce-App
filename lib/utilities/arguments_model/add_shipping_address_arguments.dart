@@ -1,13 +1,12 @@
-import 'package:ecommerce/controllers/database_controller.dart';
+import 'package:ecommerce/controllers/cubits/checkout/checkout_cubit.dart';
 import 'package:ecommerce/models/shipping_address.dart';
 
 class AddShippingAddressArguments {
-  final Database database;
   final ShippingAddressModel? shippingAddress;
+  final CheckoutCubit checkoutCubit;
 
   const AddShippingAddressArguments({
-    required this.database,
     this.shippingAddress,
-
+    required this.checkoutCubit,
   });
 }

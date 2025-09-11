@@ -1,9 +1,9 @@
-import 'package:ecommerce/controllers/database_controller.dart';
+import 'package:ecommerce/controllers/cubits/checkout/checkout_cubit.dart';
 import 'package:ecommerce/models/shipping_address.dart';
 import 'package:ecommerce/utilities/arguments_model/add_shipping_address_arguments.dart';
 import 'package:ecommerce/utilities/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ShippingAddressesItems extends StatefulWidget {
   final ShippingAddressModel shippingAddress;
@@ -25,7 +25,7 @@ class _ShippingAddressesItemsState extends State<ShippingAddressesItems> {
 
   @override
   Widget build(BuildContext context) {
-    final database = Provider.of<Database>(context);
+    final checkoutCubit = BlocProvider.of<CheckoutCubit>(context);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -48,8 +48,8 @@ class _ShippingAddressesItemsState extends State<ShippingAddressesItems> {
                   onTap: () => Navigator.of(context).pushNamed(
                     AppRoutes.addShippingAddressPageRoute,
                     arguments: AddShippingAddressArguments(
-                      database: database,
                       shippingAddress: widget.shippingAddress,
+                      checkoutCubit: checkoutCubit,
                     ),
                   ),
                   child: Text(
@@ -81,7 +81,7 @@ class _ShippingAddressesItemsState extends State<ShippingAddressesItems> {
                   checkValue = newValue!;
                 });
                 final newAddress = widget.shippingAddress.copyWith(isDefault: newValue);
-                await database.saveAddress(newAddress);
+                await checkoutCubit.saveAddress(newAddress);
               },
               activeColor: Colors.black,
               contentPadding: EdgeInsets.zero,

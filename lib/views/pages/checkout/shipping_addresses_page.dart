@@ -1,10 +1,10 @@
-import 'package:ecommerce/controllers/database_controller.dart';
-import 'package:ecommerce/models/shipping_address.dart';
+import 'package:ecommerce/controllers/cubits/checkout/checkout_cubit.dart';
 import 'package:ecommerce/utilities/arguments_model/add_shipping_address_arguments.dart';
 import 'package:ecommerce/utilities/routes.dart';
 import 'package:ecommerce/views/widgets/checkout/shipping_addresses_items.dart';
+import 'package:ecommerce/views/widgets/main_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ShippingAddressesPage extends StatefulWidget {
   const ShippingAddressesPage({super.key});
@@ -14,9 +14,16 @@ class ShippingAddressesPage extends StatefulWidget {
 }
 
 class _ShippingAddressesPageState extends State<ShippingAddressesPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<CheckoutCubit>(context).getShippingAddresses();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final database = Provider.of<Database>(context);
+    final checkoutCubit = BlocProvider.of<CheckoutCubit>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -28,13 +35,29 @@ class _ShippingAddressesPageState extends State<ShippingAddressesPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: StreamBuilder<List<ShippingAddressModel>>(
-            stream: database.getShippingAddresses(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.active) {
-                final shippingAddress = snapshot.data;
+          child: BlocBuilder<CheckoutCubit, CheckoutState>(
+            bloc: checkoutCubit,
+            buildWhen: (previous, current) =>
+                current is FetchingAddresses ||
+                current is AddressesFetched ||
+                current is AddressesFetchFailed,
+            builder: (context, state) {
+              if (state is FetchingAddresses) {
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
+              } else if (state is AddressesFetchFailed) {
+                return Center(
+                  child: MainDialog(
+                    context: context,
+                    title: 'Error',
+                    content: state.error,
+                  ).showAlertDialog(),
+                );
+              } else if (state is AddressesFetched) {
+                final shippingAddresses = state.shippingAddresses;
                 return Column(
-                  children: shippingAddress!
+                  children: shippingAddresses
                       .map(
                         (shippingAddress) => ShippingAddressesItems(
                           shippingAddress: shippingAddress,
@@ -42,10 +65,9 @@ class _ShippingAddressesPageState extends State<ShippingAddressesPage> {
                       )
                       .toList(),
                 );
+              } else {
+                return const SizedBox.shrink();
               }
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
             },
           ),
         ),
@@ -53,7 +75,9 @@ class _ShippingAddressesPageState extends State<ShippingAddressesPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(
           AppRoutes.addShippingAddressPageRoute,
-          arguments: AddShippingAddressArguments(database: database),
+          arguments: AddShippingAddressArguments(
+            checkoutCubit: checkoutCubit,
+          ),
         ),
         backgroundColor: Colors.black,
         child: const Icon(Icons.add),
