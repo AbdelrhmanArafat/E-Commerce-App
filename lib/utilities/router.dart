@@ -1,6 +1,5 @@
 import 'package:ecommerce/controllers/cubits/checkout/checkout_cubit.dart';
 import 'package:ecommerce/controllers/cubits/product_details/product_details_cubit.dart';
-import 'package:ecommerce/models/shipping_address.dart';
 import 'package:ecommerce/utilities/arguments_model/add_shipping_address_arguments.dart';
 import 'package:ecommerce/utilities/routes.dart';
 import 'package:ecommerce/views/pages/auth_page.dart';
